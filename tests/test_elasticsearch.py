@@ -279,18 +279,18 @@ class TestACLFilterES(object):
         mock_build.return_value = {'must': ['zoo']}
         params = obj.build_search_params(
             {'foo': 1, '_limit': 10, '_principals': [3, 4]})
+        print(params)
         assert sorted(params.keys()) == sorted([
             'body', 'doc_type', 'from_', 'size', 'index'])
-        assert params['body'] == {'query': {
-            'bool': {
-                'must':
-                    ['zoo', {'bool': {
-                        'must': [
-                            {'query_string': {'query': 'foo:1'}}
-                        ]}}]}}}
+        assert params['body'] == {
+            'query': {'bool': {'must': [
+                {'query_string': {'query': 'foo:1'}},
+                {'bool': {'must': ['zoo']}}
+            ]}}}
 
         assert params['index'] == 'foondex'
         assert params['doc_type'] == 'Foo'
+
         mock_build.assert_called_once_with([3, 4], 'view')
 
     @patch('nefertari_guards.elasticsearch.check_relations_permissions')
