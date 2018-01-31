@@ -21,7 +21,7 @@ def get_document_mixin(engine_module):
         def get_acl(self):
             """ Convert stored ACL to valid Pyramid ACL. """
             acl = engine_module.ACLField.objectify_acl(self._acl)
-            log.info('Loaded ACL from database for {}({}): {}'.format(
+            log.debug('Loaded ACL from database for {}({}): {}'.format(
                 self.__class__.__name__,
                 getattr(self, self.pk_field()), acl))
             return acl

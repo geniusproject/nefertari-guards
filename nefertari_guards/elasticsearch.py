@@ -26,12 +26,10 @@ class ACLFilterES(ES):
         _params = super(ACLFilterES, self).build_search_params(params)
 
         if _principals:
-            old_body = _params['body']
+            query = _params.get_query()
             permissions_query = build_acl_query(
                 _principals, self._req_permission)
-            if 'query' in old_body:
-                permissions_query['must'].append(old_body['query'])
-            _params['body'] = {'query': {'bool': permissions_query}}
+            query['bool']['must'].append({'bool': permissions_query})
         return _params
 
     def aggregate(self, request=None, **params):
